@@ -109,7 +109,6 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
     private FadeAnimator fadeAnimation;
     private SlideAnim paymentMethodSlideAnim;
     private InstallmentsAdapter installmentsAdapter;
-    private FixedAspectRatioFrameLayout aspectRatioContainer;
     private Animation toolbarAppearAnimation;
     private Animation toolbarDisappearAnimation;
     private TitlePager titlePager;
@@ -185,7 +184,6 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
 
         toolbarElementDescriptor = view.findViewById(R.id.element_descriptor_toolbar);
         pagerAndConfirmButtonContainer = view.findViewById(R.id.container);
-        aspectRatioContainer = view.findViewById(R.id.aspect_ratio_container);
         paymentMethodPager = view.findViewById(R.id.payment_method_pager);
         indicator = view.findViewById(R.id.indicator);
         installmentsRecyclerView = view.findViewById(R.id.installments_recycler_view);
@@ -193,8 +191,7 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
         expandAndCollapseAnimation = new ExpandAndCollapseAnimation(installmentsRecyclerView);
         fadeAnimation = new FadeAnimator(view.getContext());
 
-        paymentMethodSlideAnim = new SlideAnim(aspectRatioContainer);
-        configureCardAspectRatio(aspectRatioContainer);
+        paymentMethodSlideAnim = new SlideAnim(paymentMethodPager);
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         installmentsRecyclerView.setLayoutManager(linearLayoutManager);
@@ -233,14 +230,6 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
         });
 
         configureToolbar(view);
-    }
-
-    private void configureCardAspectRatio(final FixedAspectRatioFrameLayout aspectRatioContainer) {
-        if (ScaleUtil.isLowRes(aspectRatioContainer.getContext())) {
-            aspectRatioContainer.setAspectRatio(ASPECT_RATIO_LOW_RES.first, ASPECT_RATIO_LOW_RES.second);
-        } else {
-            aspectRatioContainer.setAspectRatio(ASPECT_RATIO_HIGH_RES.first, ASPECT_RATIO_HIGH_RES.second);
-        }
     }
 
     private ExpressPaymentPresenter createPresenter(@NonNull final Context context) {
@@ -347,7 +336,7 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
 
     private void animateViewPagerDown() {
         paymentMethodSlideAnim.slideDown(0, pagerAndConfirmButtonContainer.getHeight());
-        fadeAnimation.fadeOut(aspectRatioContainer);
+        fadeAnimation.fadeOut(paymentMethodPager);
         fadeAnimation.fadeOutFast(confirmButton);
         fadeAnimation.fadeOutFast(indicator);
     }
@@ -361,7 +350,7 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
     @Override
     public void collapseInstallmentsSelection() {
         paymentMethodSlideAnim.slideUp(pagerAndConfirmButtonContainer.getHeight(), 0);
-        fadeAnimation.fadeInFastest(aspectRatioContainer);
+        fadeAnimation.fadeInFastest(paymentMethodPager);
         fadeAnimation.fadeIn(confirmButton);
         fadeAnimation.fadeIn(indicator);
         expandAndCollapseAnimation.collapse();
